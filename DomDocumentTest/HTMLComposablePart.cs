@@ -47,8 +47,6 @@ namespace DomDocumentTest
         {
             if (ImportDefinitions.Contains(definition))
             {
-                var debugId = partDefinition.exportIdentifier;
-                Debug.WriteLine("SetImport part - " + debugId);
                 var htmlExports = exports.Select(e => e.Value as HtmlExport).ToList();
                 partDefinition.SetImport(definition, htmlExports);
             }
