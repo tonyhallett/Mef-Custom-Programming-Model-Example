@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="HTMLComposablePart.cs" />
     <Compile Include="HTMLComposablePartDefinition.cs" />
-    <Compile Include="HtmlElementExtensions.cs" />
     <Compile Include="HtmlExport.cs" />
     <Compile Include="HTMLExportDefinition.cs" />
     <Compile Include="HTMLImportDefinition.cs" />
