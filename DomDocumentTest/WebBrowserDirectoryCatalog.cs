@@ -18,6 +18,9 @@ namespace DomDocumentTest
         private bool throwOnRecompositionException;
 
         public event EventHandler<RecompositionAttemptEventArgs> RecompositionAttemptEvent;
+        public event EventHandler<ComposablePartCatalogChangeEventArgs> Changed;
+        public event EventHandler<ComposablePartCatalogChangeEventArgs> Changing;
+
         public WebBrowserDirectoryCatalog(HtmlDocument htmlDocument, DirectoryInfo directory, SearchOption searchOption, Func<FileInfo, bool> filter,bool throwOnRecompositionException=false)
         {
             this.throwOnRecompositionException = throwOnRecompositionException;
@@ -37,6 +40,21 @@ namespace DomDocumentTest
             }).ToArray());
         }
 
+        private void Watcher_Created(object sender, FileSystemEventArgs e)
+        {
+            if (filter(new FileInfo(e.FullPath)))
+            {
+                var streamReader = new StreamReader(e.FullPath);
+                var html = streamReader.ReadToEnd();
+                streamReader.Dispose();
+                var newParts = innerCatalog.AddFragmentWithKey(e.FullPath, html, false);
+                if (newParts.Count > 0)
+                {
+                    var changeArgs = new ComposablePartCatalogChangeEventArgs(newParts, Enumerable.Empty<ComposablePartDefinition>(), null);
+                    AddOrDeleteChanging(changeArgs, () => innerCatalog.AddKeyedParts(e.FullPath, newParts), true);
+                }
+            }
+        }
         private void Watcher_Deleted(object sender, FileSystemEventArgs e)
         {
             if (innerCatalog.KeyedParts.ContainsKey(e.FullPath))
@@ -45,39 +63,6 @@ namespace DomDocumentTest
                 var changeArgs = new ComposablePartCatalogChangeEventArgs(Enumerable.Empty<ComposablePartDefinition>(), affectedParts, null);
                 AddOrDeleteChanging(changeArgs, () => innerCatalog.RemoveKeyedParts(e.FullPath),false);
             }
-        }
-        private string GetChangeRejectedExceptionMessage(ChangeRejectedException changeRejectedException)
-        {
-            //doing 5 spaces for a tab
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("Errors:");
-            foreach(var error in changeRejectedException.Errors)
-            {
-                stringBuilder.AppendLine("     " + error.Description);
-            }
-            
-            if (changeRejectedException.RootCauses.Count > 0)
-            {
-                stringBuilder.AppendLine("");
-                stringBuilder.AppendLine("Root causes:");
-                foreach(var exception in changeRejectedException.RootCauses)
-                {
-                    string rootCauseMessage = null;
-                    
-                    var compositionException = exception as CompositionException;
-                    if (compositionException != null)
-                    {
-                        //CompositionException does BuildDefaultMessage
-                        rootCauseMessage = compositionException.Message;//just for now
-                    }else
-                    {
-                        rootCauseMessage = exception.Message;
-                    }
-                    stringBuilder.AppendLine("     " + rootCauseMessage);
-                }
-            }
-
-            return stringBuilder.ToString();
         }
         private void AddOrDeleteChanging(ComposablePartCatalogChangeEventArgs changeArgs,Action addDeleteAction,bool added)
         {
@@ -115,34 +100,51 @@ namespace DomDocumentTest
 
             RecompositionAttemptEvent?.Invoke(this, recompositionEventArgs);
         }
+        
+        public override IEnumerator<ComposablePartDefinition> GetEnumerator()
+        {
+            return innerCatalog.GetEnumerator();
+        }
+
         protected virtual void RecompositionException(ChangeRejectedException changeRejectedException)
         {
             if (throwOnRecompositionException)
             {
                 throw changeRejectedException;
             }
-            
+
         }
-        private void Watcher_Created(object sender, FileSystemEventArgs e)
+        private string GetChangeRejectedExceptionMessage(ChangeRejectedException changeRejectedException)
         {
-            if (filter(new FileInfo(e.FullPath)))
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Errors:");
+            foreach (var error in changeRejectedException.Errors)
             {
-                var streamReader = new StreamReader(e.FullPath);
-                var html = streamReader.ReadToEnd();
-                streamReader.Dispose();
-                var newParts = innerCatalog.AddFragmentWithKey(e.FullPath, html, false);
-                if (newParts.Count > 0)
+                stringBuilder.AppendLine("     " + error.Description);
+            }
+
+            if (changeRejectedException.RootCauses.Count > 0)
+            {
+                stringBuilder.AppendLine("");
+                stringBuilder.AppendLine("Root causes:");
+                foreach (var exception in changeRejectedException.RootCauses)
                 {
-                    var changeArgs = new ComposablePartCatalogChangeEventArgs(newParts, Enumerable.Empty<ComposablePartDefinition>(), null);
-                    AddOrDeleteChanging(changeArgs, () => innerCatalog.AddKeyedParts(e.FullPath, newParts),true);
+                    string rootCauseMessage = null;
+
+                    var compositionException = exception as CompositionException;
+                    if (compositionException != null)
+                    {
+                        rootCauseMessage = compositionException.Message;
+                    }
+                    else
+                    {
+                        rootCauseMessage = exception.Message;
+                    }
+                    stringBuilder.AppendLine("     " + rootCauseMessage);
                 }
             }
+
+            return stringBuilder.ToString();
         }
-        public override IEnumerator<ComposablePartDefinition> GetEnumerator()
-        {
-            return innerCatalog.GetEnumerator();
-        }
-        public event EventHandler<ComposablePartCatalogChangeEventArgs> Changed;
-        public event EventHandler<ComposablePartCatalogChangeEventArgs> Changing;
     }
 }

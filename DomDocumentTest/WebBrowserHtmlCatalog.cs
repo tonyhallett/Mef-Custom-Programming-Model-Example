@@ -11,10 +11,9 @@ namespace DomDocumentTest
     {
         private const string exportAttributeName = "export";
         private HtmlDocument doc;
-        
-
-        public List<ComposablePartDefinition> htmlParts = new List<ComposablePartDefinition>();
+        private List<ComposablePartDefinition> htmlParts = new List<ComposablePartDefinition>();
         private Dictionary<string, List<HTMLComposablePartDefinition>> keyedParts = new Dictionary<string, List<HTMLComposablePartDefinition>>();
+
         public Dictionary<string, List<HTMLComposablePartDefinition>> KeyedParts
         {
             get
@@ -48,12 +47,6 @@ namespace DomDocumentTest
                 AddFragmentWithKey(fragmentAndKey.Item1, fragmentAndKey.Item2);
             }
         }
-        
-        public void AddKeyedParts(string key, List<HTMLComposablePartDefinition> parts)
-        {
-            htmlParts.AddRange(parts);
-            keyedParts.Add(key, parts);
-        }
         public List<HTMLComposablePartDefinition> AddFragmentWithKey(string key, string fragment, bool addToParts = true)
         {
             var container = doc.CreateElement("div");
@@ -82,14 +75,11 @@ namespace DomDocumentTest
             }
             return parts;
         }
-        
-        
-        public void RemoveParts(IEnumerable<ComposablePartDefinition> partsToRemove)
+
+        public void AddKeyedParts(string key, List<HTMLComposablePartDefinition> parts)
         {
-            foreach (var part in partsToRemove)
-            {
-                htmlParts.Remove(part);
-            }
+            htmlParts.AddRange(parts);
+            keyedParts.Add(key, parts);
         }
         public void RemoveKeyedParts(string key)
         {
@@ -100,6 +90,14 @@ namespace DomDocumentTest
                 htmlParts.Remove(part);
             }
         }
+        public void RemoveParts(IEnumerable<ComposablePartDefinition> partsToRemove)
+        {
+            foreach (var part in partsToRemove)
+            {
+                htmlParts.Remove(part);
+            }
+        }
+        
         public override IEnumerator<ComposablePartDefinition> GetEnumerator()
         {
             return htmlParts.GetEnumerator();
