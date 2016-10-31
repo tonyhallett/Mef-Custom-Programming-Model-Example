@@ -1,0 +1,3 @@
+<div>
+	<span export='exactlyOneAllowsRecomposition'>This will throw when recompose as the import is exactly one.</span>
+</div>

@@ -1,0 +1,3 @@
+<div>
+<div export='zeroOrOneAllowRecomposition'>Second matching export, will not throw but will result in 0 exports</div>
+</div>

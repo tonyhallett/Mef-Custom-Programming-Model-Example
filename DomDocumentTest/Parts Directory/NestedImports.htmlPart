@@ -1,0 +1,9 @@
+<div>
+                <div export='exportAndImportMany' import='importAnyMultiple' isRecomposable='true' cardinality='ZeroOrMore'></div>
+                <div export='exportWithChildImports'>
+                    This is some text
+		    <div style='color:red'>This element is not an import or export, inside an export</div>
+                    <ul import='explicitTagType' importTagType='li'></ul>
+                    <h1 import='implicitTagType'></h1>
+                </div>
+</div>

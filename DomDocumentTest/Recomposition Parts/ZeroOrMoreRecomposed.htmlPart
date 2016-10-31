@@ -1,0 +1,5 @@
+<div>
+ <div export='importAnyMultiple'>
+	<div style="color:red">ZeroOrMore allow recomposition ( any tag type ) - this has been recomposed !</div>
+ </div>
+</div>

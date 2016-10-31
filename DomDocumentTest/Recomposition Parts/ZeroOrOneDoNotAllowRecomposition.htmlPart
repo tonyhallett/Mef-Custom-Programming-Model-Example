@@ -1,0 +1,3 @@
+<div>
+<div export='zeroOrOneDoNotAllowRecomposition'>This will throw when put into the watched directory</div>
+</div>

@@ -1,0 +1,3 @@
+<div>
+  <div export='implicitTagType'>This will not match</div>
+</div>
