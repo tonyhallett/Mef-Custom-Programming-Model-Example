@@ -53,7 +53,6 @@
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.Size = new System.Drawing.Size(1726, 1296);
             this.webBrowser1.TabIndex = 0;
-            
             // 
             // panel2
             // 
@@ -108,6 +107,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox tbRecompositionEventDetails;
         private System.Windows.Forms.Label label1;
+        
     }
 }
 

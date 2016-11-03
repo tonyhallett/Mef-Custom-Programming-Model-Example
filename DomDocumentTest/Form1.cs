@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HTMLComposition;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition.Hosting;
@@ -18,7 +19,7 @@ namespace DomDocumentTest
     {
         private CompositionContainer container;
         private WebBrowserDirectoryCatalog htmlCatalog;
-
+        private const string compositionDirectoryName = "Composition Directory";
         public Form1()
         {
             InitializeComponent();
@@ -54,8 +55,8 @@ namespace DomDocumentTest
             webBrowser1.DocumentText = mainHtml;
             Application.DoEvents();
             var doc = webBrowser1.Document;
-            var htmlPagePart = new HTMLComposablePartDefinition(doc.Body).CreatePart();
-            DirectoryInfo partsDirectory = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            var htmlPagePart = HTMLComposablePart.CreateRootPart(doc.Body);
+            DirectoryInfo partsDirectory = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)+Path.DirectorySeparatorChar+compositionDirectoryName);
             htmlCatalog = new WebBrowserDirectoryCatalog(doc, partsDirectory, SearchOption.AllDirectories, (f) =>
                  {
                      return f.Extension == ".htmlPart";
@@ -88,6 +89,6 @@ namespace DomDocumentTest
             tbRecompositionEventDetails.Text = text;
         }
 
-       
+      
     }
 }

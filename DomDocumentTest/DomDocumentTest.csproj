@@ -52,15 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HTMLComposablePart.cs" />
-    <Compile Include="HTMLComposablePartDefinition.cs" />
-    <Compile Include="HtmlExport.cs" />
-    <Compile Include="HTMLExportDefinition.cs" />
-    <Compile Include="HTMLImportDefinition.cs" />
-    <Compile Include="RecompositionAttemptEventArgs.cs" />
-    <Compile Include="RecompositionEventReason.cs" />
-    <Compile Include="WebBrowserDirectoryCatalog.cs" />
-    <Compile Include="WebBrowserHtmlCatalog.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +72,27 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Content Include="Composition Directory\ExactlyOne.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Composition Directory\ExplicitTagType.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Composition Directory\ExportsMultiple.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Composition Directory\ImplicitTagType.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Composition Directory\NestedImports.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Composition Directory\ZeroOrMore.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Composition Directory\ZeroOrOneAllowRecomposition.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,11 +102,34 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Recomposition Parts\DoesNotMatchSpecificTagType.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recomposition Parts\ExactlyOneSecondThrows.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recomposition Parts\ImportsRecomposed.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recomposition Parts\ZeroOrMoreRecomposed.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recomposition Parts\ZeroOrOneDoNotAllowRecomposition.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recomposition Parts\ZeroOrOneSecondNoThrowNoExports.htmlPart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\HTMLComposition\HTMLComposition.csproj">
+      <Project>{9505f537-97e3-46ab-98be-a3d7f1071d3f}</Project>
+      <Name>HTMLComposition</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

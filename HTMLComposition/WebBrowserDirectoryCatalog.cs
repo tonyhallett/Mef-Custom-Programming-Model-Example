@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace DomDocumentTest
+namespace HTMLComposition
 {
     public class WebBrowserDirectoryCatalog : ComposablePartCatalog, INotifyComposablePartCatalogChanged
     {
@@ -66,9 +66,11 @@ namespace DomDocumentTest
         }
         private void AddOrDeleteChanging(ComposablePartCatalogChangeEventArgs changeArgs,Action addDeleteAction,bool added)
         {
-            RecompositionAttemptEventArgs recompositionEventArgs = new RecompositionAttemptEventArgs();
             bool changeException = false;
             ChangeRejectedException changeRejectedException = null;
+            string failureDetails = null;
+            bool recompositionSuccess = false;
+            RecompositionEventReason recompositionEventReason = RecompositionEventReason.Deleted;
             try
             {
                 Changing?.Invoke(this, changeArgs);
@@ -76,7 +78,7 @@ namespace DomDocumentTest
             }
             catch (ChangeRejectedException exc)
             {
-                recompositionEventArgs.FailureDetails = GetChangeRejectedExceptionMessage(exc);
+                failureDetails = GetChangeRejectedExceptionMessage(exc);
                 changeException = true;
             }
             
@@ -85,20 +87,17 @@ namespace DomDocumentTest
 
             if (!changeException)
             {
-                recompositionEventArgs.Success = true;
+                recompositionSuccess = true;
             }else
             {
                 RecompositionException(changeRejectedException);
             }
             if (added)
             {
-                recompositionEventArgs.Reason = RecompositionEventReason.Added;
-            }else
-            {
-                recompositionEventArgs.Reason = RecompositionEventReason.Deleted;
+                recompositionEventReason = RecompositionEventReason.Added;
             }
 
-            RecompositionAttemptEvent?.Invoke(this, recompositionEventArgs);
+            RecompositionAttemptEvent?.Invoke(this, new RecompositionAttemptEventArgs(recompositionSuccess,recompositionEventReason,failureDetails));
         }
         
         public override IEnumerator<ComposablePartDefinition> GetEnumerator()

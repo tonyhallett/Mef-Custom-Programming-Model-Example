@@ -5,7 +5,7 @@ using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace DomDocumentTest
+namespace HTMLComposition
 {
     public class WebBrowserHtmlCatalog : ComposablePartCatalog
     {

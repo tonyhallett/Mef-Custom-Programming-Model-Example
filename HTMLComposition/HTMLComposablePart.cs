@@ -3,21 +3,30 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 
-namespace DomDocumentTest
+namespace HTMLComposition
 {
 
     public class HTMLComposablePart : ComposablePart
     {
         private HTMLComposablePartDefinition partDefinition;
+        private HtmlElement exportedElement;
+
         public override string ToString()
         {
             return partDefinition.ToString();
         }
-        internal HTMLComposablePart(HTMLComposablePartDefinition definition)
+        internal HTMLComposablePart(HTMLComposablePartDefinition definition,HtmlElement exportedElement)
         {
+            this.exportedElement = exportedElement;
             this.partDefinition = definition;
         }
+        public static HTMLComposablePart CreateRootPart(HtmlElement rootElement)
+        {
+            return HTMLComposablePartDefinition.CreateRootPart(rootElement);
+        }
+        
         public override IEnumerable<ExportDefinition> ExportDefinitions
         {
             get
@@ -25,7 +34,6 @@ namespace DomDocumentTest
                 return partDefinition.ExportDefinitions;
             }
         }
-
         public override IEnumerable<ImportDefinition> ImportDefinitions
         {
             get
@@ -33,13 +41,11 @@ namespace DomDocumentTest
                 return partDefinition.ImportDefinitions;
             }
         }
-
-
         public override object GetExportedValue(ExportDefinition definition)
         {
             if (ExportDefinitions.Contains(definition))
             {
-                return partDefinition.GetExportedValue();
+                return exportedElement;
             }
             throw new ArgumentException();
         }
@@ -47,8 +53,7 @@ namespace DomDocumentTest
         {
             if (ImportDefinitions.Contains(definition))
             {
-                var htmlExports = exports.Select(e => e.Value as HtmlExport).ToList();
-                partDefinition.SetImport(definition, htmlExports);
+                ((HTMLImportDefinition)definition).SetImports(exportedElement, exports);
             }
         }
     }
